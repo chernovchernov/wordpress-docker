@@ -39,10 +39,9 @@ RUN chown www-data:www-data /var/www/wordpress
 RUN chmod 755 /var/www/wordpress
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
+#SSL key and cert for security connection of HTTP
 COPY wordpress.crt /etc/ssl/certs/wordpress.crt
 COPY wordpress.key /etc/ssl/private/wordpress.key
-#SSL key and cert for security connection of HTTP
-#RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/wordpress.key -out /etc/ssl/certs/wordpress.crt
 
 #Copy wordpress config
 COPY wordpress.conf /etc/apache2/sites-available/
