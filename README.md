@@ -14,29 +14,27 @@ Launch MySQL-Server
 --------------------
 
 Install and Launch Mysql-server and do the following commands:
-
+```
+sudo mysql
+```
 Create Wordpress Database:
 ```
 mysql> CREATE DATABASE wordpress;
 Query OK, 1 row affected (0,00 sec)
 ```
-
-Create Wordpress User:
+Create Wordpress User (<container_ip_address> find by using command `docker inspect <your_container_name> | grep IPAddress`):
 ```
-mysql> CREATE USER wordpress@localhost IDENTIFIED BY '<your-password>';
+mysql> CREATE USER wordpress@<container_ip_address> IDENTIFIED BY '<your-password>';
 Query OK, 1 row affected (0,00 sec)
 ```
 
-Give to user some rights to edit Wordpress site
+Give to user some rights to edit Wordpress site 
 ```
 mysql> GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER
     -> ON wordpress.*
-    -> TO wordpress@localhost;
+    -> TO wordpress@<container_ip_address>;
     Query OK, 1 row affected (0,00 sec)
-```
-> Note: Change "localhost" to IP address of your server where MySQL launched
-
-```    
+   
 mysql> FLUSH PRIVILEGES;
 Query OK, 1 row affected (0,00 sec)
 
@@ -44,15 +42,31 @@ mysql> quit
 Bye
 ```
 
-Edit Wp-config.php file: 
+Edit `wp-config.php` file: 
+```
+nano wp-config.php
+```
 
 Change 'password' to your password and 'localhost' to IP address of your server:
 
 ```
-define( 'DB_PASSWORD', 'password' );
+define( 'DB_PASSWORD', '<your_password>' );
 define( 'DB_HOST', 'localhost:3306' );
 ```
-
+Find all notes of "bind address":
+```
+grep -r "bind-address" /etc
+```
+and change it to the `0.0.0.0`
+Files `/etc/mysql/conf.d/mysql.cnf` and `/etc/mysql/mysql.conf.d/mysql.cnf` also might consist following sets:
+```
+[mysql]
+bind-address = 0.0.0.0
+```
+Restart Mysql:
+```
+sudo service mysql restart
+```
 Launch Docker image
 -------------------
 Install Docker, make directory and put all files from this repository there.
@@ -66,8 +80,9 @@ After few minutes, you will get docker image with our wordpress site.
 Launch docker image to docker container by following command:
 
 ```
-docker run --network host -d 80:80 wordpress:v1
+docker run --network bridge -d -p 443:443 wordpress:v1
 ```
+
 
 > Note: Write IP addres of local server at /etc/hosts file in your computer where you checking result
 > "ip_address_server1" one.wordpress.ru www.one.wordpress.ru
