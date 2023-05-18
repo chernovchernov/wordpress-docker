@@ -13,8 +13,10 @@ You need open source projects to work properly:
 Launch MySQL-Server
 --------------------
 
-Install and Launch Mysql-server and do the following commands:
+Install and Launch Mysql-server:
 ```
+sudo apt update
+sudo apt install mysql-server
 sudo mysql
 ```
 Create Wordpress Database:
